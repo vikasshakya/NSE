@@ -27,7 +27,7 @@ def get_nifty50_list():
             reader = csv.reader(f)
             for row in reader:
                 if row[2].lower() != "symbol":
-                    nifty50list.append(row[2])            
+                    nifty50list.append(row[2].strip())            
     except Exception, e:
         print e
        
@@ -78,8 +78,7 @@ def chart(ws):
     row_count = ws.max_row    
     data = Reference(ws, min_col=4, max_col=5, min_row=3, max_row=row_count)
     titles = Reference(ws, min_col=1, min_row=4, max_row=row_count)
-    chart = BarChart3D()    
-    #chart.plot_area.graphicalProperties = GraphicalProperties(solidFill="000000")
+    chart = BarChart3D()        
     chart.x_axis.title = "Date"
     chart.y_axis.title = "Price"
     chart.title = "3D Bar Chart"
@@ -163,8 +162,6 @@ def NSE():
         print e
         return 0
 
-
-#for key, value in sorted(mydict.iteritems(), key=lambda (k,v): (v,k)):
         
             
 if __name__ == "__main__":
