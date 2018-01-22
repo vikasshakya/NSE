@@ -143,8 +143,9 @@ def NSE():
                     cell.font = Font(color=colors.BLUE, italic=True, name='Arial', size=14, bold=True, underline="single")
                     cell.fill = PatternFill(start_color='FFDEAD', end_color='FFDEAD',fill_type='solid')
                     for item in dic:
+                        worksheet[item].alignment = Alignment(horizontal='center', vertical='center')
                         worksheet[item].alignment =  worksheet[item].alignment.copy(wrapText=True)
-                        worksheet[item] = dic[item]
+                        worksheet[item] = dic[item]                        
                         worksheet[item].font = Font(color=colors.RED, name='Arial', size=10, bold=True,italic=True)
                         worksheet[item].fill = PatternFill(start_color='000000', end_color='000000',fill_type='solid')               
 
