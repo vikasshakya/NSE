@@ -146,8 +146,7 @@ def NSE():
                 else:
                     worksheet = workbook.get_sheet_by_name(stock)
                 worksheet.append(nift50dic[stock])
-                chart(worksheet)
-                break
+                chart(worksheet)                
                                                                                                                 
                        
         workbook.save(wb)
