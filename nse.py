@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import urllib2
 from openpyxl import *
 from openpyxl.styles import *
 from openpyxl.chart.shapes import GraphicalProperties
@@ -32,8 +32,6 @@ def get_nifty50_list():
        
 
 
-
-
 def add_comma(value):
     return value
     try:       
@@ -42,8 +40,6 @@ def add_comma(value):
         return val 
     except Exception,e:
         return value
-    
-
 
 
 
@@ -57,6 +53,13 @@ def date(date):
         return date
 
 
+def curr_date():
+    try:
+        now = datetime.datetime.now()
+        now = str(now)
+        return now.split(' ')[0]
+    except Exception,e:
+            return "None"
 
 def time():
     try:
@@ -96,13 +99,20 @@ def NSE():
             workbook.remove_sheet(workbook.get_sheet_by_name('Sheet'))
         else:        
             workbook = load_workbook(wb)
-        sheets = workbook.get_sheet_names()
-                   
+            
+        sheets = workbook.get_sheet_names()                   
         nse = Nse()
         all_stock_codes = nse.get_stock_codes(cached=False)        
         for stock in sorted(all_stock_codes.iterkeys()):
-            if stock in nifty50list:                
-                st = nse.get_quote(stock)
+            if stock in nifty50list:
+                try:                   
+                    st = nse.get_quote(stock)                    
+                except urllib2.HTTPError, e:
+                    print e.code
+                    return 0
+                except urllib2.URLError, e:
+                    print e.args
+                    return 0
                 if st['change'] == None:
                     inr_change = st['lastPrice'] - st['previousClose']
                 else:
@@ -113,7 +123,7 @@ def NSE():
                 else:
                     per_change = st['pChange']
                     
-                nift50dic[stock] = [date(st['secDate']),time(),add_comma(st['previousClose']),add_comma(st['open']),add_comma(st['closePrice']),\
+                nift50dic[stock] = [curr_date(),time(),add_comma(st['previousClose']),add_comma(st['open']),add_comma(st['closePrice']),\
                                     add_comma(st['dayHigh']),add_comma(st['dayLow']),add_comma(st['lastPrice']),add_comma(st['averagePrice']),\
                                     inr_change, per_change, add_comma(st['totalTradedVolume']),add_comma(st['totalTradedValue']),\
                                     add_comma(st['high52']),add_comma(st['low52'])]
@@ -137,12 +147,15 @@ def NSE():
                     worksheet = workbook.get_sheet_by_name(stock)
                 worksheet.append(nift50dic[stock])
                 chart(worksheet)
+                break
                                                                                                                 
                        
-        workbook.save(wb)  
+        workbook.save(wb)
+        return 1
         
     except Exception,e:
         print e
+        return 0
 
 
 #for key, value in sorted(mydict.iteritems(), key=lambda (k,v): (v,k)):
@@ -151,8 +164,8 @@ def NSE():
 if __name__ == "__main__":
     try:
         print "Getting Data...\n"        
-        NSE()
-        print "Data store is done!!!"
+        if NSE():
+            print "Data store is done!!!"
     except Exception,e:
         print e
 
