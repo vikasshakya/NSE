@@ -57,7 +57,10 @@ def curr_date():
     try:
         now = datetime.datetime.now()
         now = str(now)
-        return now.split(' ')[0]
+        date = now.split(' ')[0].split('-')
+        date.reverse()
+        date = "-".join(date)        
+        return date
     except Exception,e:
             return "None"
 
@@ -119,7 +122,7 @@ def NSE():
                     inr_change = st['change']
                     
                 if st['pChange'] == None:
-                    per_change =  "{0:.2f}".format(((st['lastPrice'] - st['previousClose'])/st['previousClose'])*100)
+                    per_change =  float("{0:.2f}".format(((st['lastPrice'] - st['previousClose'])/st['previousClose'])*100))
                 else:
                     per_change = st['pChange']
                     
