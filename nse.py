@@ -3,6 +3,7 @@ import urllib2
 from openpyxl import *
 from openpyxl.styles import *
 from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.chart.label import DataLabelList
 import csv, time,datetime,re
 from nsetools import Nse
 from pprint import pprint
@@ -82,6 +83,8 @@ def chart(ws):
     chart.x_axis.title = "Date"
     chart.y_axis.title = "Price"
     chart.title = "3D Bar Chart"
+    chart.dataLabels = DataLabelList() 
+    chart.dataLabels.showVal = True
     chart.add_data(data=data, titles_from_data=True)
     chart.set_categories(titles)
     ws.add_chart(chart, "Q4")
@@ -149,8 +152,8 @@ def NSE():
                 else:
                     worksheet = workbook.get_sheet_by_name(stock)
                 worksheet.append(nift50dic[stock])
-                chart(worksheet)                
-                                                                                                                
+                chart(worksheet)
+                                                                                                                                
                        
         workbook.save(wb)
         return 1
